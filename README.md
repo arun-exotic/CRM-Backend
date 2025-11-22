@@ -336,21 +336,6 @@ npx prisma studio
 | `JWT_SECRET` | Secret key for JWT token signing | Yes |
 | `JWT_EXPIRES_IN` | JWT token expiration time (e.g., "7d") | No (default: "7d") |
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the UNLICENSED license.
-
-## 👥 Authors
-
-- Your Name - Initial work
 
 ## 🙏 Acknowledgments
 
