@@ -1,98 +1,363 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Task CRM
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A modern, full-featured Customer Relationship Management (CRM) system built with NestJS, TypeScript, and Prisma. This application provides a robust API for managing companies, contacts, deals, and users with role-based access control.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Features
 
-## Description
+- **Authentication & Authorization**
+  - JWT-based authentication
+  - Role-based access control (USER, ADMIN)
+  - Secure password hashing with bcrypt
+  - Protected API endpoints
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Core CRM Functionality**
+  - **Companies Management**: Create, read, update, and delete company records
+  - **Contacts Management**: Manage contact information with relationships to companies
+  - **Deals Management**: Track deals with stages (OPEN, IN_PROGRESS, CLOSED) and amounts
+  - **User Management**: User registration and profile management
 
-## Project setup
+- **Additional Features**
+  - Pagination support for list endpoints
+  - Data validation with class-validator
+  - Automatic timestamps (createdAt, updatedAt)
+  - Many-to-many relationships between entities
+  - Audit trail (tracks who created each record)
 
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Node.js** (v18 or higher)
+- **npm** or **yarn**
+- **PostgreSQL** (v12 or higher)
+- **Git**
+
+## 🛠️ Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd task-crm
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/task_crm?schema=public"
+   JWT_SECRET="your-secret-key-here"
+   JWT_EXPIRES_IN="7d"
+   ```
+
+4. **Set up the database**
+   ```bash
+   # Generate Prisma Client
+   npx prisma generate
+
+   # Run database migrations
+   npx prisma migrate dev
+   ```
+
+5. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+## 🏃 Running the Application
+
+### Development Mode
 ```bash
-$ npm install
+npm run start:dev
+```
+The application will start on `http://localhost:3000` with hot-reload enabled.
+
+### Production Mode
+```bash
+npm run build
+npm run start:prod
 ```
 
-## Compile and run the project
-
+### Debug Mode
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:debug
 ```
 
-## Run tests
+## 📚 API Documentation
 
-```bash
-# unit tests
-$ npm run test
+### Authentication Endpoints
 
-# e2e tests
-$ npm run test:e2e
+#### Register a new user
+```http
+POST /auth/register
+Content-Type: application/json
 
-# test coverage
-$ npm run test:cov
+{
+  "email": "user@example.com",
+  "password": "securePassword123",
+  "name": "John Doe"
+}
 ```
 
-## Deployment
+#### Login
+```http
+POST /auth/login
+Content-Type: application/json
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+{
+  "email": "user@example.com",
+  "password": "securePassword123"
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**Response:**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
 
-## Resources
+### Protected Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+All endpoints below require authentication. Include the JWT token in the Authorization header:
+```http
+Authorization: Bearer <your-jwt-token>
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Companies Endpoints
 
-## Support
+- `GET /companies` - Get all companies (with pagination)
+- `GET /companies/:id` - Get a specific company
+- `POST /companies` - Create a new company (USER, ADMIN)
+- `PATCH /companies/:id` - Update a company (USER, ADMIN)
+- `DELETE /companies/:id` - Delete a company (ADMIN only)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Create Company Example:**
+```http
+POST /companies
+Authorization: Bearer <token>
+Content-Type: application/json
 
-## Stay in touch
+{
+  "name": "Acme Corporation",
+  "domain": "acme.com",
+  "industry": "Technology",
+  "address": "123 Main St, City, State"
+}
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Contacts Endpoints
 
-## License
+- `GET /contacts` - Get all contacts (with pagination)
+- `GET /contacts/:id` - Get a specific contact
+- `POST /contacts` - Create a new contact
+- `PATCH /contacts/:id` - Update a contact
+- `DELETE /contacts/:id` - Delete a contact (ADMIN only)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Create Contact Example:**
+```http
+POST /contacts
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "Jane Smith",
+  "email": "jane@example.com",
+  "phone": "+1234567890",
+  "address": "456 Oak Ave"
+}
+```
+
+### Deals Endpoints
+
+- `GET /deals` - Get all deals (with pagination)
+- `GET /deals/:id` - Get a specific deal
+- `POST /deals` - Create a new deal
+- `PATCH /deals/:id` - Update a deal
+- `DELETE /deals/:id` - Delete a deal (ADMIN only)
+
+**Create Deal Example:**
+```http
+POST /deals
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Q1 Enterprise Deal",
+  "stage": "OPEN",
+  "amount": 50000.00,
+  "companyId": 1
+}
+```
+
+### Users Endpoints
+
+- `GET /users` - Get all users
+- `GET /users/:id` - Get a specific user
+- `PATCH /users/:id` - Update a user
+- `DELETE /users/:id` - Delete a user (ADMIN only)
+
+## 🗄️ Database Schema
+
+### Models
+
+- **User**: Authentication and user management
+  - Roles: `USER`, `ADMIN`
+  - Tracks created companies, contacts, and deals
+
+- **Company**: Business entity information
+  - Fields: name, domain, industry, address
+  - Related to contacts (many-to-many) and deals
+
+- **Contact**: Individual contact information
+  - Fields: name, email, phone, address
+  - Can be associated with multiple companies
+  - Can be associated with multiple deals
+
+- **Deal**: Sales opportunity tracking
+  - Stages: `OPEN`, `IN_PROGRESS`, `CLOSED`
+  - Fields: title, stage, amount, companyId
+  - Related to contacts (many-to-many)
+
+### Relationships
+
+- User → Companies (one-to-many)
+- User → Contacts (one-to-many)
+- User → Deals (one-to-many)
+- Company ↔ Contacts (many-to-many via `ContactCompany`)
+- Deal ↔ Contacts (many-to-many via `DealContact`)
+- Company → Deals (one-to-many)
+
+## 🔒 Security
+
+- **Password Hashing**: Passwords are hashed using bcrypt before storage
+- **JWT Authentication**: Secure token-based authentication
+- **Role-Based Access Control**: Different permissions for USER and ADMIN roles
+- **Input Validation**: All inputs are validated using class-validator
+- **SQL Injection Protection**: Prisma ORM provides parameterized queries
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+
+# Watch mode
+npm run test:watch
+```
+
+## 📦 Project Structure
+
+```
+task-crm/
+├── prisma/
+│   ├── migrations/          # Database migrations
+│   └── schema.prisma        # Prisma schema definition
+├── src/
+│   ├── auth/                # Authentication module
+│   │   ├── dto/             # Data transfer objects
+│   │   ├── jwt.strategy.ts  # JWT strategy
+│   │   ├── jwt-auth.guard.ts
+│   │   ├── roles.guard.ts   # Role-based guard
+│   │   └── roles.enum.ts    # Role definitions
+│   ├── companies/           # Companies module
+│   ├── contacts/            # Contacts module
+│   ├── deals/               # Deals module
+│   ├── users/               # Users module
+│   ├── prisma/              # Prisma service
+│   ├── common/              # Shared utilities
+│   ├── app.module.ts        # Root module
+│   └── main.ts              # Application entry point
+├── test/                    # E2E tests
+└── dist/                    # Compiled output
+```
+
+## 🛠️ Development
+
+### Code Formatting
+```bash
+npm run format
+```
+
+### Linting
+```bash
+npm run lint
+```
+
+### Database Management
+
+```bash
+# Create a new migration
+npx prisma migrate dev --name migration_name
+
+# Reset database (WARNING: This will delete all data)
+npx prisma migrate reset
+
+# View database in Prisma Studio
+npx prisma studio
+```
+
+## 🚢 Deployment
+
+1. **Build the application**
+   ```bash
+   npm run build
+   ```
+
+2. **Set production environment variables**
+   - Ensure `DATABASE_URL` points to your production database
+   - Use a strong `JWT_SECRET` in production
+
+3. **Run database migrations**
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+4. **Start the application**
+   ```bash
+   npm run start:prod
+   ```
+
+## 📝 Environment Variables
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `JWT_SECRET` | Secret key for JWT token signing | Yes |
+| `JWT_EXPIRES_IN` | JWT token expiration time (e.g., "7d") | No (default: "7d") |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the UNLICENSED license.
+
+## 👥 Authors
+
+- Your Name - Initial work
+
+## 🙏 Acknowledgments
+
+- Built with [NestJS](https://nestjs.com/)
+- Database management with [Prisma](https://www.prisma.io/)
+- Authentication with [Passport.js](http://www.passportjs.org/)
+
+---
+
+For more information about NestJS, visit the [official documentation](https://docs.nestjs.com/).
