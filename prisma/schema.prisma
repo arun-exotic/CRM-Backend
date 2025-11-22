@@ -1,0 +1,113 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum DealStage {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String
+  role      Role      @default(USER)
+
+  companies Company[]
+  contacts  Contact[]
+  deals     Deal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Company {
+  id          Int            @id @default(autoincrement())
+  name        String
+  domain      String?
+  industry    String?
+  address     String?
+
+  createdById Int?
+  createdBy   User?           @relation(fields: [createdById], references: [id])
+
+  contacts    ContactCompany[]
+  deals       Deal[]
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+
+
+model Contact {
+  id          Int            @id @default(autoincrement())
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  
+  companies   ContactCompany[]
+  deals       DealContact[]
+
+  createdById Int?
+  createdBy   User?           @relation(fields: [createdById], references: [id])
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+
+
+model Deal {
+  id          Int          @id @default(autoincrement())
+  title       String
+  stage       DealStage    @default(OPEN)
+  amount      Float
+  companyId   Int
+
+  company     Company      @relation(fields: [companyId], references: [id])
+  contacts    DealContact[]
+
+  createdById Int?
+  createdBy   User?        @relation(fields: [createdById], references: [id])
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+
+
+model ContactCompany {
+  contactId Int
+  companyId Int
+
+  contact   Contact @relation(fields: [contactId], references: [id])
+  company   Company @relation(fields: [companyId], references: [id])
+
+  @@id([contactId, companyId])
+}
+
+model DealContact {
+  dealId    Int
+  contactId Int
+
+  deal      Deal    @relation(fields: [dealId], references: [id])
+  contact   Contact @relation(fields: [contactId], references: [id])
+
+  @@id([dealId, contactId])
+}
